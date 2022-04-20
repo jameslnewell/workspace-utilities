@@ -6,10 +6,14 @@ import { Manifest } from "./Manifest";
 export class Project {
   #root: Workspace;
   #workspaces: Set<Workspace>;
+  #workspacesByName: Map<string, Workspace>;
 
   constructor(root: Workspace, workspaces: Set<Workspace>) {
     this.#root = root;
     this.#workspaces = workspaces;
+    this.#workspacesByName = new Map(
+      Array.from(workspaces).map((workspace) => [workspace.name, workspace])
+    );
   }
 
   get root(): Workspace {
@@ -20,15 +24,17 @@ export class Project {
     return this.#workspaces;
   }
 
+  getWorkspaceByName(name: string): Workspace | undefined {
+    return this.#workspacesByName.get(name);
+  }
+
   static async read(directory: string): Promise<Project> {
     const workspaces = new Set<Workspace>();
-    const workspacesByName = new Map<string, Workspace>();
     const rootManifest = await Manifest.read(
       path.join(directory, "package.json")
     );
-    const rootWorkspace = new Workspace(rootManifest, workspacesByName);
+    const rootWorkspace = new Workspace(rootManifest);
     workspaces.add(rootWorkspace);
-    workspacesByName.set(rootWorkspace.name, rootWorkspace);
 
     const files = await glob(
       rootManifest.workspaces.map((pattern) => `${pattern}/package.json`),
@@ -38,9 +44,8 @@ export class Project {
     await Promise.all(
       files.map(async (file) => {
         const childManifest = await Manifest.read(file);
-        const childWorkspace = new Workspace(childManifest, workspacesByName);
+        const childWorkspace = new Workspace(childManifest);
         workspaces.add(childWorkspace);
-        workspacesByName.set(childWorkspace.name, childWorkspace);
       })
     );
 

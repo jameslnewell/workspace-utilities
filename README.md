@@ -10,7 +10,7 @@ import {Project, excludeRoot, includeDiff, includeDependents} from '@jameslnewel
 const project = await Project.read(process.cwd());
 const childWorkspaces = await excludeRoot(project.workspaces, {project})
 const changedWorkspaces = await filterByDiff(childWorkspaces, {since: 'master'})
-const changedWorkspacesAndTheirDependents = await includeDependents(changedWorkspaces)
+const changedWorkspacesAndTheirDependents = await includeDependents(changedWorkspaces, {project})
 
 changedWorkspacesAndTheirDependents.map(console.log)
 
