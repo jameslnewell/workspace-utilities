@@ -1,0 +1,25 @@
+{
+  "name": "workspace-utilities",
+  "version": "0.1.0",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "@jameslnewell/jest-preset": "^3.0.0",
+    "@types/jest": "^27.4.1",
+    "@types/mock-fs": "^4.13.1",
+    "jest": "^27.5.1",
+    "mock-fs": "^5.1.2",
+    "typescript": "^4.6.3"
+  },
+  "jest": {
+    "preset": "@jameslnewell/jest-preset"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "dependencies": {
+    "@types/semver": "^7.3.9",
+    "fast-glob": "^3.2.11",
+    "semver": "^7.3.7"
+  }
+}
