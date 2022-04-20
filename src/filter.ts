@@ -83,28 +83,38 @@ export function getDependents(
 
 export function includeDependencies(
   workspaces: Set<Workspace>,
-  options: {}
+  options: GetDependenciesOptions
 ): Set<Workspace> {
-  return new Set();
+  return new Set([
+    ...workspaces,
+    ...Array.from(workspaces)
+      .map((workspace) => Array.from(getDependencies(workspace, options)))
+      .flat(),
+  ]);
 }
 
 export function includeDependents(
   workspaces: Set<Workspace>,
-  options: {}
+  options: GetDependentsOptions
 ): Set<Workspace> {
-  return new Set();
+  return new Set([
+    ...workspaces,
+    ...Array.from(workspaces)
+      .map((workspace) => Array.from(getDependents(workspace, options)))
+      .flat(),
+  ]);
 }
 
 export function excludeDependencies(
   workspaces: Set<Workspace>,
-  options: {}
+  options: GetDependenciesOptions
 ): Set<Workspace> {
   return new Set();
 }
 
 export function excludeDependents(
   workspaces: Set<Workspace>,
-  options: {}
+  options: GetDependentsOptions
 ): Set<Workspace> {
   return new Set();
 }
