@@ -60,7 +60,7 @@ jobs:
         shell: bash {0} # opt-out of exit on error
       - run: git push
       - run: git push --follow-tags
-      - run: yarn dlx publish-if-not-published
+      - run: npx publish-if-not-published
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
