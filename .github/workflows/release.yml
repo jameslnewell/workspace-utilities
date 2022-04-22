@@ -62,5 +62,5 @@ jobs:
       - run: git push --follow-tags
       - run: npx -y publish-if-not-published
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
