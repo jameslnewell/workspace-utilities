@@ -10,12 +10,12 @@ describe("Project", () => {
           version: "1.0.0",
           workspaces: ["packages/*"],
         }),
-        "packages/bar/package.json": JSON.stringify({
-          name: "bar",
-          version: "1.0.0",
-        }),
         "packages/foo/package.json": JSON.stringify({
           name: "foo",
+          version: "1.0.0",
+        }),
+        "packages/bar/package.json": JSON.stringify({
+          name: "bar",
           version: "1.0.0",
         }),
       })
@@ -23,17 +23,38 @@ describe("Project", () => {
 
     afterEach(() => createMockFilesystem.restore());
 
-    test("returns root workspace", async () => {
-      const project = await Project.read(".");
-      expect(project.root.name).toEqual("root");
+    describe(".root", () => {
+      test("is the root workspace", async () => {
+        const project = await Project.read(".");
+        expect(project.root.name).toEqual("root");
+      });
     });
 
-    test("returns other workspaces", async () => {
-      const project = await Project.read(".");
-      const workspaces = Array.from(project.workspaces);
-      expect(workspaces[0]).toHaveProperty("name", "root");
-      expect(workspaces[1]).toHaveProperty("name", "bar");
-      expect(workspaces[2]).toHaveProperty("name", "foo");
+    describe(".workspaces", () => {
+      test("does not include the root workspace", async () => {
+        const project = await Project.read(".");
+        const workspaces = Array.from(project.workspaces);
+        expect(workspaces).not.toContainEqual(
+          expect.objectContaining({
+            name: "root",
+          })
+        );
+      });
+
+      test("includes other workspaces", async () => {
+        const project = await Project.read(".");
+        const workspaces = project.workspaces;
+        expect(workspaces).toContainEqual(
+          expect.objectContaining({
+            name: "bar",
+          })
+        );
+        expect(workspaces).toContainEqual(
+          expect.objectContaining({
+            name: "foo",
+          })
+        );
+      });
     });
   });
 });

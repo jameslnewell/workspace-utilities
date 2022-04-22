@@ -5,22 +5,23 @@ import { Manifest } from "./Manifest";
 
 export class Project {
   #root: Workspace;
-  #workspaces: Set<Workspace>;
+  #workspaces: Array<Workspace>;
   #workspacesByName: Map<string, Workspace>;
 
-  constructor(root: Workspace, workspaces: Set<Workspace>) {
+  constructor(root: Workspace, workspaces: Array<Workspace>) {
     this.#root = root;
     this.#workspaces = workspaces;
     this.#workspacesByName = new Map(
       Array.from(workspaces).map((workspace) => [workspace.name, workspace])
     );
+    // TODO: error if multiple packages exist with the same name
   }
 
   get root(): Workspace {
     return this.#root;
   }
 
-  get workspaces(): Set<Workspace> {
+  get workspaces(): Array<Workspace> {
     return this.#workspaces;
   }
 
@@ -29,23 +30,23 @@ export class Project {
   }
 
   static async read(directory: string): Promise<Project> {
-    const workspaces = new Set<Workspace>();
-    const rootManifest = await Manifest.read(
-      path.join(directory, "package.json")
+    const workspaces: Array<Workspace> = [];
+
+    const rootWorkspace = new Workspace(
+      await Manifest.read(path.join(directory, "package.json"))
     );
-    const rootWorkspace = new Workspace(rootManifest);
-    workspaces.add(rootWorkspace);
 
     const files = await glob(
-      rootManifest.workspaces.map((pattern) => `${pattern}/package.json`),
+      rootWorkspace.manifest.workspaces.map(
+        (pattern) => `${pattern}/package.json`
+      ),
       { cwd: directory }
     );
 
     await Promise.all(
       files.map(async (file) => {
-        const childManifest = await Manifest.read(file);
-        const childWorkspace = new Workspace(childManifest);
-        workspaces.add(childWorkspace);
+        const childWorkspace = new Workspace(await Manifest.read(file));
+        workspaces.push(childWorkspace);
       })
     );
 

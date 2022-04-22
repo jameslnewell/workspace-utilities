@@ -5,6 +5,7 @@
   "license": "MIT",
   "devDependencies": {
     "@jameslnewell/jest-preset": "^3.0.0",
+    "@types/debug": "^4.1.7",
     "@types/jest": "^27.4.1",
     "@types/mock-fs": "^4.13.1",
     "jest": "^27.5.1",
@@ -19,6 +20,7 @@
   },
   "dependencies": {
     "@types/semver": "^7.3.9",
+    "debug": "^4.3.4",
     "fast-glob": "^3.2.11",
     "semver": "^7.3.7"
   }
