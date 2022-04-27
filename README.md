@@ -13,11 +13,11 @@ const since = 'master'
 const project = await Project.read(process.cwd());
 
 const isWorkspaceChanged = await createIsWorkspaceChangedFilter({project, since});
-const changedChildWorkspaces = project.workspaces.filter(isWorkspaceChanged)
+const changedWorkspaces = project.workspaces.filter(isWorkspaceChanged)
 
 const changedWorkspacesAndTheirDependents = Array.from(new Set([
-  ...changedChildWorkspaces,
-  ...getDependents(changedChildWorkspaces, {project})
+  ...changedWorkspaces,
+  ...changedWorkspaces.map(changedWorkspace => getDependents(changedWorkspace, {project, recursive: true})).flat()
 ]))
 
 changedWorkspacesAndTheirDependents.map(console.log)

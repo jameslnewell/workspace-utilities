@@ -151,4 +151,26 @@ describe("Manifest", () => {
       }
     );
   });
+  describe(".script()", () => {
+    test("returns the script when there is a script with the specified name", () => {
+      const manifest = new Manifest("package.json", {
+        name: "foo",
+        version: "1.0.0",
+        scripts: {
+          test: "jest",
+        },
+      });
+      expect(manifest.script("test")).toEqual("jest");
+    });
+    test("returns undefined when there is no script with the specified name", () => {
+      const manifest = new Manifest("package.json", {
+        name: "foo",
+        version: "1.0.0",
+        scripts: {
+          test: "jest",
+        },
+      });
+      expect(manifest.script("start")).toBeUndefined();
+    });
+  });
 });

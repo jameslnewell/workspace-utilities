@@ -8,6 +8,7 @@ export interface ManifestJSON {
   workspaces?: string[] | { packages: string[] };
   dependencies?: Record<string, string>;
   devDependencies?: Record<string, string>;
+  scripts?: Record<string, string>;
 }
 
 export class Manifest {
@@ -63,6 +64,10 @@ export class Manifest {
     return combined;
   }
 
+  script(name: string): string | undefined {
+    return this.#json.scripts?.[name];
+  }
+
   static async read(file: string): Promise<Manifest> {
     const contents = await fs.readFile(file);
     const json = JSON.parse(contents.toString());
@@ -76,6 +81,8 @@ export class Manifest {
     if (typeof json.version !== "string") {
       throw new Error(`package.json doesn't contain a valid version`);
     }
+
+    // TODO: check other types match ManifestJSON
 
     return new Manifest(file, json);
   }
