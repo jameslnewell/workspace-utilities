@@ -1,8 +1,16 @@
 import createMockFilesystem from "mock-fs";
-import { Manifest } from "./Manifest";
+import { Workspace } from "./Workspace";
 
-describe("Manifest", () => {
-  describe(".read()", () => {
+const rootFile = "package.json";
+const rootJSON = {
+  name: "root",
+  version: "1.0.0",
+  workspaces: ["packages/*"],
+};
+const rootWorkspace = new Workspace(rootFile, rootJSON);
+
+describe("Workspace", () => {
+  describe(".fromJSONFile()", () => {
     beforeEach(() =>
       createMockFilesystem({
         "does-not-contain-valid-json/package.json": "x$%",
@@ -24,13 +32,13 @@ describe("Manifest", () => {
 
     test("rejects when file does not exist", async () => {
       await expect(
-        Manifest.read("does-not-exist/package.json")
+        Workspace.fromFile("does-not-exist/package.json")
       ).rejects.toHaveProperty("message", expect.stringContaining("ENOENT"));
     });
 
     test("rejects when file does not contain valid json", async () => {
       await expect(
-        Manifest.read("does-not-contain-valid-json/package.json")
+        Workspace.fromFile("does-not-contain-valid-json/package.json")
       ).rejects.toHaveProperty(
         "message",
         expect.stringContaining("Unexpected token")
@@ -39,7 +47,7 @@ describe("Manifest", () => {
 
     test("rejects when file does not contain a json object", async () => {
       await expect(
-        Manifest.read("does-not-contain-json-object/package.json")
+        Workspace.fromFile("does-not-contain-json-object/package.json")
       ).rejects.toMatchObject({
         message: expect.stringContaining("doesn't contain a valid manifest"),
       });
@@ -47,7 +55,7 @@ describe("Manifest", () => {
 
     test("rejects when file does not have a name", async () => {
       await expect(
-        Manifest.read("does-not-contain-name/package.json")
+        Workspace.fromFile("does-not-contain-name/package.json")
       ).rejects.toMatchObject({
         message: expect.stringContaining("doesn't contain a valid name"),
       });
@@ -55,71 +63,63 @@ describe("Manifest", () => {
 
     test("rejects when file does not have a version", async () => {
       await expect(
-        Manifest.read("does-not-contain-version/package.json")
+        Workspace.fromFile("does-not-contain-version/package.json")
       ).rejects.toMatchObject({
         message: expect.stringContaining("doesn't contain a valid version"),
       });
     });
 
     test("resolves a manifest with the correct file", async () => {
-      await expect(Manifest.read("valid/package.json")).resolves.toHaveProperty(
-        "file",
-        "valid/package.json"
-      );
+      await expect(
+        Workspace.fromFile("valid/package.json")
+      ).resolves.toHaveProperty("file", "valid/package.json");
     });
 
     test("resolves a manifest with the correct json", async () => {
-      await expect(Manifest.read("valid/package.json")).resolves.toHaveProperty(
-        "json",
-        {
-          name: "name",
-          version: "1.0.0",
-        }
-      );
+      await expect(
+        Workspace.fromFile("valid/package.json")
+      ).resolves.toHaveProperty("json", {
+        name: "name",
+        version: "1.0.0",
+      });
     });
   });
 
   describe(".workspaces", () => {
     test("returns an empty array when no workspace configuration is provided", () => {
-      const manifest = new Manifest("package.json", {
-        name: "foo",
-        version: "1.0.0",
+      const rootWorkspace = new Workspace(rootFile, {
+        ...rootJSON,
+        workspaces: undefined,
       });
-      expect(manifest.workspaces).toHaveLength(0);
+      expect(rootWorkspace.workspaces).toHaveLength(0);
     });
     test("returns an array of patterns when a simple workspace configuration is provided", () => {
-      const manifest = new Manifest("package.json", {
-        name: "foo",
-        version: "1.0.0",
+      const rootWorkspace = new Workspace(rootFile, {
+        ...rootJSON,
         workspaces: ["packages/*", "website"],
       });
-      expect(manifest.workspaces).toEqual(["packages/*", "website"]);
+      expect(rootWorkspace.workspaces).toEqual(["packages/*", "website"]);
     });
     test("returns an array of patterns when a complex workspace configuration is provided", () => {
-      const manifest = new Manifest("package.json", {
-        name: "foo",
-        version: "1.0.0",
+      const rootWorkspace = new Workspace(rootFile, {
+        ...rootJSON,
         workspaces: {
           packages: ["packages/*", "website"],
         },
       });
-      expect(manifest.workspaces).toEqual(["packages/*", "website"]);
+      expect(rootWorkspace.workspaces).toEqual(["packages/*", "website"]);
     });
   });
 
   describe(".dependencies()", () => {
     test("returns zero dependencies when the default properties do not contain dependencies", () => {
-      const manifest = new Manifest("package.json", {
-        name: "foo",
-        version: "1.0.0",
-      });
-      expect(Object.fromEntries(manifest.dependencies())).toEqual({});
+      const workspace = new Workspace(rootFile, rootJSON);
+      expect(Object.fromEntries(workspace.dependencies())).toEqual({});
     });
 
     test("returns dependencies when the default properties do contain dependencies", () => {
-      const manifest = new Manifest("package.json", {
-        name: "foo",
-        version: "1.0.0",
+      const workspace = new Workspace(rootFile, {
+        ...rootJSON,
         dependencies: {
           express: "^4.17.0",
         },
@@ -127,7 +127,7 @@ describe("Manifest", () => {
           "@types/express": "^4.17.0",
         },
       });
-      expect(Object.fromEntries(manifest.dependencies())).toEqual({
+      expect(Object.fromEntries(workspace.dependencies())).toEqual({
         express: "^4.17.0",
         "@types/express": "^4.17.0",
       });
@@ -135,9 +135,8 @@ describe("Manifest", () => {
   });
 
   test("returns dependencies when the specified properties do contain dependencies", () => {
-    const manifest = new Manifest("package.json", {
-      name: "foo",
-      version: "1.0.0",
+    const workspace = new Workspace(rootFile, {
+      ...rootJSON,
       dependencies: {
         express: "^4.17.0",
       },
@@ -145,32 +144,32 @@ describe("Manifest", () => {
         "@types/express": "^4.17.0",
       },
     });
-    expect(Object.fromEntries(manifest.dependencies(["dependencies"]))).toEqual(
-      {
-        express: "^4.17.0",
-      }
-    );
+    expect(
+      Object.fromEntries(workspace.dependencies(["dependencies"]))
+    ).toEqual({
+      express: "^4.17.0",
+    });
   });
+
   describe(".script()", () => {
     test("returns the script when there is a script with the specified name", () => {
-      const manifest = new Manifest("package.json", {
-        name: "foo",
-        version: "1.0.0",
+      const workspace = new Workspace(rootFile, {
+        ...rootJSON,
         scripts: {
           test: "jest",
         },
       });
-      expect(manifest.script("test")).toEqual("jest");
+      expect(workspace.script("test")).toEqual("jest");
     });
+
     test("returns undefined when there is no script with the specified name", () => {
-      const manifest = new Manifest("package.json", {
-        name: "foo",
-        version: "1.0.0",
+      const workspace = new Workspace(rootFile, {
+        ...rootJSON,
         scripts: {
           test: "jest",
         },
       });
-      expect(manifest.script("start")).toBeUndefined();
+      expect(workspace.script("start")).toBeUndefined();
     });
   });
 });

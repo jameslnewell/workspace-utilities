@@ -10,20 +10,20 @@ export async function getDiff({
   root,
   since,
   files = [],
-}: GetDiffOptions = {}) {
+}: GetDiffOptions = {}): Promise<Record<string, string>> {
   const args = ["diff", "--name-status", "--relative"];
   if (since) args.push(since);
   const { stdout } = await exec("git", [...args, "--", ...files], {
     cwd: root,
   });
 
-  const map = new Map<string, string>();
+  const statusByFile: Record<string, string> = {};
   for (const line of stdout.split("\n")) {
     const trimmed = line.trim();
     if (!trimmed) continue;
     const [status, file] = line.split(/\s+/);
-    map.set(file, status);
+    statusByFile[file] = status;
   }
 
-  return map;
+  return statusByFile;
 }
