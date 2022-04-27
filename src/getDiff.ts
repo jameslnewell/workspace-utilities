@@ -1,20 +1,19 @@
+import path from "path";
 import { exec } from "./exec";
 
 export interface GetDiffOptions {
-  root?: string;
   since?: string;
   files?: string[];
 }
 
-export async function getDiff({
-  root,
-  since,
-  files = [],
-}: GetDiffOptions = {}): Promise<Record<string, string>> {
+export async function getDiff(
+  directory: string,
+  { since, files = [] }: GetDiffOptions = {}
+): Promise<Record<string, string>> {
   const args = ["diff", "--name-status", "--relative"];
   if (since) args.push(since);
   const { stdout } = await exec("git", [...args, "--", ...files], {
-    cwd: root,
+    cwd: directory,
   });
 
   const statusByFile: Record<string, string> = {};
@@ -22,7 +21,7 @@ export async function getDiff({
     const trimmed = line.trim();
     if (!trimmed) continue;
     const [status, file] = line.split(/\s+/);
-    statusByFile[file] = status;
+    statusByFile[path.join(directory, file)] = status;
   }
 
   return statusByFile;
