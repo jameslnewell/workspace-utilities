@@ -1,6 +1,5 @@
 import fs from "fs/promises";
 import path from "path";
-import { Project } from "./Project";
 
 export interface JSON {
   name: string;

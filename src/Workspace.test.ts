@@ -7,7 +7,6 @@ const rootJSON = {
   version: "1.0.0",
   workspaces: ["packages/*"],
 };
-const rootWorkspace = new Workspace(rootFile, rootJSON);
 
 describe("Workspace", () => {
   describe(".fromJSONFile()", () => {

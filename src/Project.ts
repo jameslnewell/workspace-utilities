@@ -2,8 +2,7 @@ import path from "path";
 import debug from "debug";
 import glob from "fast-glob";
 import { satisfies } from "semver";
-import { Workspace } from "./Workspace";
-import { Manifest, ManifestDependencyKey } from "./Manifest";
+import { DependencyKey, Workspace } from "./Workspace";
 
 const logger = debug("@jameslnewell/workspace-utilities");
 const getWorkspaceDependenciesLogger = logger.extend(
@@ -11,12 +10,12 @@ const getWorkspaceDependenciesLogger = logger.extend(
 );
 const getWorkspaceDependentsLogger = logger.extend("getWorkspaceDependents");
 export interface ProjectGetWorkspaceDependenciesOptions {
-  keys?: ManifestDependencyKey[];
+  keys?: DependencyKey[];
   recursive?: boolean;
 }
 
 export interface ProjectGetWorkspaceDependentsOptions {
-  keys?: ManifestDependencyKey[];
+  keys?: DependencyKey[];
   recursive?: boolean;
 }
 
