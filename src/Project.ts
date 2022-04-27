@@ -40,7 +40,7 @@ export class Project {
       rootWorkspace.manifest.workspaces.map(
         (pattern) => `${pattern}/package.json`
       ),
-      { cwd: directory }
+      { cwd: directory, absolute: true }
     );
 
     await Promise.all(
