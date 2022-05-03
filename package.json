@@ -10,6 +10,7 @@
   "dependencies": {
     "debug": "^4.3.4",
     "fast-glob": "^3.2.11",
+    "micromatch": "^4.0.5",
     "semver": "^7.3.7"
   },
   "devDependencies": {
@@ -20,6 +21,7 @@
     "@swc/jest": "^0.2.20",
     "@types/debug": "^4.1.7",
     "@types/jest": "^27.4.1",
+    "@types/micromatch": "^4.0.2",
     "@types/mock-fs": "^4.13.1",
     "@types/semver": "^7.3.9",
     "chokidar": "^3.5.3",
