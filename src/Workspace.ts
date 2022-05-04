@@ -27,6 +27,14 @@ export class Workspace {
     this.#workspacesByName = workspacesByName;
   }
 
+  get directory(): string {
+    return path.dirname(this.#manifest.file);
+  }
+
+  get manifest(): Manifest {
+    return this.#manifest;
+  }
+
   get private(): boolean {
     return this.#manifest.private;
   }
@@ -37,10 +45,6 @@ export class Workspace {
 
   get version(): string {
     return this.#manifest.version;
-  }
-
-  get directory(): string {
-    return path.dirname(this.#manifest.file);
   }
 
   hasScript(name: string): boolean {
