@@ -1,3 +1,3 @@
-export * from "./getDiff";
 export * from "./Project";
 export * from "./Workspace";
+export * from "./getWorkspaces";

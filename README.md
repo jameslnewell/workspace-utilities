@@ -2,20 +2,20 @@
 
 ![checks](https://github.com/jameslnewell/workspace-utilities/actions/workflows/checks.yml/badge.svg) ![release](https://github.com/jameslnewell/workspace-utilities/actions/workflows/release.yml/badge.svg)
 
-Utilities for finding and filtering `yarn`/`pnpm`/`npm` workspaces.
+Utilities for finding and filtering `yarn`/`npm` workspaces.
 
 ## Usage
 
 ```ts
 import {Project, getDiff} from '@jameslnewell/workspace-utilities'
 
-const directory = process.cwd();
-const diff = await getDiff(directory, {since: 'master'});
-const project = await Project.fromDirectory(directory);
-const workspaces = project.getWorkspaces({
-  diff, 
-  dependents: 'recursive'
-})
+const workspaces = await getWorkspaces(
+  await Project.fromDirectory(process.cwd()), 
+  {
+    since: 'master',
+    includeDependents: 'recursive',
+  }
+);
 
-workspaces.map(console.log)
+workspaces.map(workspace => console.log(`${workspace.name}@${workspace.version}));
 ```
