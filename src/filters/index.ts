@@ -52,5 +52,3 @@ export function and(
 ): WorkspaceFilter {
   return (workspace: Workspace) => filters.every((filter) => filter(workspace));
 }
-
-export function parse(filter: string) {}
