@@ -1,14 +1,14 @@
 import {
   nameMatches,
   directoryMatches,
-  hasScript,
+  scriptExists,
   isPrivate,
   not,
   or,
   and,
-} from "./filters";
-import { Manifest } from "./Manifest";
-import { Workspace } from "./Workspace";
+} from ".";
+import { Manifest } from "../Manifest";
+import { Workspace } from "../Workspace";
 
 const workspacesByName = {};
 
@@ -112,7 +112,7 @@ describe("directoryMatches()", () => {
   });
 });
 
-describe("hasScript()", () => {
+describe("scriptExists()", () => {
   test("matches workspace with script", () => {
     const workspace = new Workspace(
       new Manifest("packages/foo/package.json", {
@@ -124,7 +124,7 @@ describe("hasScript()", () => {
       }),
       workspacesByName
     );
-    const matches = hasScript("test")(workspace);
+    const matches = scriptExists("test")(workspace);
     expect(matches).toBeTruthy();
   });
 
@@ -136,7 +136,7 @@ describe("hasScript()", () => {
       }),
       workspacesByName
     );
-    const matches = hasScript("test")(workspace);
+    const matches = scriptExists("test")(workspace);
     expect(matches).toBeFalsy();
   });
 });
