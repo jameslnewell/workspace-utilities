@@ -2,6 +2,7 @@ import path from "path";
 import createMockFilesystem from "mock-fs";
 import { Project } from "./Project";
 import { isPrivate, not, hasChanged, scriptExists } from "./filters";
+import { getWorkspaces } from "./getWorkspaces";
 
 const rootDirectory = ".";
 
@@ -54,7 +55,7 @@ describe("usage", () => {
 
   afterEach(() => createMockFilesystem.restore());
 
-  test("get changed packages", async () => {
+  test("get changed workspaces", async () => {
     const diff = {
       [path.resolve("packages/changed-package/src/index.ts")]: "M",
     };
@@ -68,7 +69,7 @@ describe("usage", () => {
     );
   });
 
-  test("get public packages", async () => {
+  test("get public workspaces", async () => {
     const project = await Project.fromDirectory(rootDirectory);
     const workspaces = project.workspaces.filter(not(isPrivate()));
     expect(workspaces).toContainEqual(
@@ -79,7 +80,7 @@ describe("usage", () => {
     );
   });
 
-  test("get packages which have script", async () => {
+  test("get workspaces which have script", async () => {
     const project = await Project.fromDirectory(rootDirectory);
     const workspaces = project.workspaces.filter(scriptExists("test"));
     expect(workspaces).toContainEqual(
@@ -87,6 +88,21 @@ describe("usage", () => {
     );
     expect(workspaces).not.toContainEqual(
       expect.objectContaining({ name: "without-script" })
+    );
+  });
+
+  test("README", async () => {
+    const workspaces = await getWorkspaces(
+      await Project.fromDirectory(rootDirectory),
+      {
+        // TODO:
+        // since: process.env.SINCE,
+        includeDependents: "recursive",
+      }
+    );
+    expect(workspaces).toContainEqual(expect.objectContaining({ name: "foo" }));
+    expect(workspaces).not.toContainEqual(
+      expect.objectContaining({ name: "root" })
     );
   });
 });

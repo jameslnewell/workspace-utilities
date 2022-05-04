@@ -1,4 +1,4 @@
-import { Workspace } from "../Workspace";
+import { Workspace } from "./Workspace";
 import path from "path";
 import micromatch from "micromatch";
 

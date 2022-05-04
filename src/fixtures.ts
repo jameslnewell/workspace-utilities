@@ -3,6 +3,8 @@ import { Workspace } from "./Workspace";
 
 export const rootDirectory = "";
 
+export const since = "ref";
+
 const workspacesByName: Record<string, Workspace> = {};
 
 export const rootFile = "package.json";
@@ -23,6 +25,9 @@ export const fooJSON = {
 };
 export const fooManifest = new Manifest(fooFile, fooJSON);
 export const fooWorkspace = new Workspace(fooManifest, workspacesByName);
+export const fooDiff = {
+  [fooFile]: "M",
+};
 
 export const barFile = "packages/bar/package.json";
 export const barName = "bar";
@@ -32,6 +37,9 @@ export const barJSON = {
 };
 export const barManifest = new Manifest(barFile, barJSON);
 export const barWorkspace = new Workspace(barManifest, workspacesByName);
+export const barDiff = {
+  [barFile]: "M",
+};
 
 export const barBarFile = "packages/barbar/package.json";
 export const barBarName = "barbar";

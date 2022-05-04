@@ -1,4 +1,4 @@
-import { getDiff } from ".";
+import { getDiff } from "./getDiff";
 import { exec } from "./exec";
 
 jest.mock("./exec");

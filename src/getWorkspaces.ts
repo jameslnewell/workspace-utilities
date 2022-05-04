@@ -1,26 +1,27 @@
 import path from "path";
 import { isPrivate, not } from "./filters";
+import { getDiff } from "./getDiff";
 import { Project } from "./Project";
 import { Workspace } from "./Workspace";
 
 export interface GetWorkspacesOptions {
-  diff?: Record<string, string>;
+  since?: string;
   excludeRoot?: boolean;
   excludePrivate?: boolean;
   includeDependents?: boolean | "recursive";
   includedependencies?: boolean | "recursive";
 }
 
-export function getWorkspaces(
+export async function getWorkspaces(
   project: Project,
   {
-    diff,
-    excludeRoot,
+    since,
+    excludeRoot = true,
     excludePrivate,
     includeDependents,
     includedependencies,
   }: GetWorkspacesOptions = {}
-): Workspace[] {
+): Promise<Workspace[]> {
   let workspaces = project.workspaces;
 
   if (!excludeRoot) {
@@ -31,8 +32,10 @@ export function getWorkspaces(
     workspaces = workspaces.filter(not(isPrivate()));
   }
 
-  if (diff) {
-    const changedFiles = Object.keys(diff);
+  if (since) {
+    const changedFiles = Object.keys(
+      await getDiff(project.root.directory, { since })
+    );
     workspaces = workspaces.filter((workspace) => {
       for (const changedFile of changedFiles) {
         if (changedFile.startsWith(`${workspace.directory}${path.sep}`)) {

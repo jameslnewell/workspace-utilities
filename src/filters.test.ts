@@ -6,9 +6,9 @@ import {
   not,
   or,
   and,
-} from ".";
-import { Manifest } from "../Manifest";
-import { Workspace } from "../Workspace";
+} from "./filters";
+import { Manifest } from "./Manifest";
+import { Workspace } from "./Workspace";
 
 const workspacesByName = {};
 
