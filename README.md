@@ -12,7 +12,7 @@ import {Project, getDiff} from '@jameslnewell/workspace-utilities'
 const workspaces = await getWorkspaces(
   await Project.fromDirectory(process.cwd()), 
   {
-    since: process.env.SINCE,
+    since: 'master',
     includeDependents: 'recursive',
   }
 );
