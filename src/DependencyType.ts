@@ -1,4 +1,4 @@
 export enum DependencyType {
   Dependencies,
-  DevDependencies,
+  DevelopmentDependencies,
 }

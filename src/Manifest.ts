@@ -3,7 +3,7 @@ import { DependencyType } from "./DependencyType";
 
 const dependencyKeys = {
   [DependencyType.Dependencies]: "dependencies" as const,
-  [DependencyType.DevDependencies]: "devDependencies" as const,
+  [DependencyType.DevelopmentDependencies]: "devDependencies" as const,
 };
 
 export interface JSON {
@@ -62,7 +62,7 @@ export class Manifest {
   getDependencies(
     types: DependencyType[] = [
       DependencyType.Dependencies,
-      DependencyType.DevDependencies,
+      DependencyType.DevelopmentDependencies,
     ]
   ): Map<string, string> {
     const combined = new Map<string, string>();
