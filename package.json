@@ -3,7 +3,9 @@
   "version": "0.4.0",
   "main": "dist/index.js",
   "files": [
-    "dist"
+    "dist",
+    "filters.js",
+    "filters.d.ts"
   ],
   "author": "James Newell <james@jameslnewell.dev>",
   "license": "MIT",
