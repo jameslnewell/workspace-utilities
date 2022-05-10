@@ -686,6 +686,7 @@ __metadata:
     "@types/jest": ^27.4.1
     "@types/micromatch": ^4.0.2
     "@types/mock-fs": ^4.13.1
+    "@types/node": ^17.0.31
     "@types/semver": ^7.3.9
     chokidar: ^3.5.3
     jest: ^27.5.1
@@ -708,6 +709,7 @@ __metadata:
     "@types/jest": ^27.4.1
     "@types/micromatch": ^4.0.2
     "@types/mock-fs": ^4.13.1
+    "@types/node": ^17.0.31
     "@types/semver": ^7.3.9
     chokidar: ^3.5.3
     debug: ^4.3.4
@@ -1391,7 +1393,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*":
+"@types/node@npm:*, @types/node@npm:^17.0.31":
   version: 17.0.31
   resolution: "@types/node@npm:17.0.31"
   checksum: 704618350f8420d5c47db0f7778398e821b7724369946f5c441a7e6b9343295553936400eb8309f0b07d5e39c240988ab3456b983712ca86265dabc9aee4ad3d

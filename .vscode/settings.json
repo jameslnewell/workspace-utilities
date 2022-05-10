@@ -1,0 +1,8 @@
+{
+  "jest.jestCommandLine": "yarn run test",
+  "search.exclude": {
+    "**/.yarn": true,
+    "**/.pnp.*": true
+  },
+  "prettier.prettierPath": ".yarn/sdks/prettier/index.js"
+}

@@ -1128,6 +1128,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/jest", "npm:27.5.0"],\
             ["@types/micromatch", "npm:4.0.2"],\
             ["@types/mock-fs", "npm:4.13.1"],\
+            ["@types/node", "npm:17.0.31"],\
             ["@types/semver", "npm:7.3.9"],\
             ["chokidar", "npm:3.5.3"],\
             ["jest", "virtual:f8f782619ffd137f0c5fc846e25e01d1512b4f0575f418e71583b6d93db543a2a58b4d0c22b6098635ea10f65d34b8c8c2be7654a59872b2066eb48de791008a#npm:27.5.1"],\
@@ -1150,6 +1151,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/jest", "npm:27.5.0"],\
             ["@types/micromatch", "npm:4.0.2"],\
             ["@types/mock-fs", "npm:4.13.1"],\
+            ["@types/node", "npm:17.0.31"],\
             ["@types/semver", "npm:7.3.9"],\
             ["chokidar", "npm:3.5.3"],\
             ["debug", "virtual:b86a9fb34323a98c6519528ed55faa0d9b44ca8879307c0b29aa384bde47ff59a7d0c9051b31246f14521dfb71ba3c5d6d0b35c29fffc17bf875aa6ad977d9e8#npm:4.3.4"],\
