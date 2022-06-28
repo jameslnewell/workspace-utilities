@@ -18,7 +18,6 @@ jobs:
           node-version-file: '.nvmrc'
       - run: pnpm install --frozen-lockfile
       - run: pnpm run build
-      - run: ls -la .
       - uses: actions/upload-artifact@v3
         with:
           name: dist
@@ -40,7 +39,8 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: dist
-          path: packages/*/dist/
+          path: .
+      - run: ls -la packages/*/dist
       - run: pnpm changeset version
       - run: git config --global user.email "github-actions[bot]"
       - run: git config --global user.name github-actions[bot]@users.noreply.github.com
