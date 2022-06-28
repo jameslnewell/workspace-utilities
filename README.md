@@ -4,10 +4,16 @@
 
 - [`@jameslnewell/workspace-utilities`](./packages/workspace-utilities)
 
-## Development
+## Contributing
 
 ### Installation
 
 ```bash
 pnpm install
+```
+
+### Development
+
+```bash
+pnpm run develop
 ```
