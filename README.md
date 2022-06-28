@@ -1,5 +1,7 @@
 # utilities
 
+![checks](https://github.com/jameslnewell/workspace-utilities/actions/workflows/checks.yml/badge.svg) ![release](https://github.com/jameslnewell/workspace-utilities/actions/workflows/release.yml/badge.svg)
+
 ## Packages
 
 - [`@jameslnewell/workspace-utilities`](./packages/workspace-utilities)
