@@ -13,8 +13,9 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v2
         with:
-          node-version: 16
+          node-version: 17
           registry-url: https://registry.npmjs.org/
+      - uses: pnpm/action-setup@v2.2.2
       - id: pnpm-cache-dir-path
         run: echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"
       - uses: actions/cache@v3
@@ -38,8 +39,9 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v2
         with:
-          node-version: 16
+          node-version: 17
           registry-url: https://registry.npmjs.org/
+      - uses: pnpm/action-setup@v2.2.2
       - id: pnpm-cache-dir-path
         run: echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"
       - uses: actions/cache@v3

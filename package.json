@@ -19,5 +19,5 @@
     "version": "changeset version",
     "release": "changeset publish"
   },
-  "packageManager": "yarn@3.2.0"
+  "packageManager": "pnpm@7.1.7"
 }
