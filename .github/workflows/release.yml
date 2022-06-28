@@ -39,6 +39,7 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: dist
+          path: packages
       - run: ls -la packages/*/dist
       - run: pnpm changeset version
       - run: git config --global user.email "github-actions[bot]"
