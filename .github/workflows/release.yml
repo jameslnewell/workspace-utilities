@@ -22,7 +22,7 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: dist
-          path: ./pacakges/*/dist/
+          path: ./pacakges/
           if-no-files-found: error
 
   npm-publish:
