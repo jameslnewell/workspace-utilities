@@ -22,7 +22,7 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: dist
-          path: pacakges/*/dist
+          path: pacakges/*/dist/
           if-no-files-found: error
 
   npm-publish:
@@ -40,7 +40,7 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: dist
-          path: packages/*/dist
+          path: packages/*/dist/
       - run: pnpm changeset version
       - run: git config --global user.email "github-actions[bot]"
       - run: git config --global user.name github-actions[bot]@users.noreply.github.com
