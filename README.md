@@ -4,6 +4,7 @@
 
 ## Packages
 
+- [`@jameslnewell/git-utilities`](./packages/git-utilities)
 - [`@jameslnewell/workspace-utilities`](./packages/workspace-utilities)
 
 ## Contributing
