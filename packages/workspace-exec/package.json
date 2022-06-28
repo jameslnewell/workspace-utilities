@@ -27,12 +27,12 @@
     "preset": "@jameslnewell/jest-preset"
   },
   "scripts": {
-    "check": "yarn run check:types",
+    "check": "pnpm run check:types",
     "check:types": "tsc --noEmit",
-    "build": "yarn run build:types && yarn run build:transpile",
+    "build": "pnpm run build:types && pnpm run build:transpile",
     "build:types": "tsc --declaration --emitDeclarationOnly",
-    "build:transpile": "yarn swc src --out-dir dist --source-maps",
-    "develop": "yarn run build:transpile --watch",
+    "build:transpile": "swc src --out-dir dist --source-maps",
+    "develop": "pnpm run build:transpile --watch",
     "test": "jest",
     "version": "changeset version",
     "release": "changeset publish"

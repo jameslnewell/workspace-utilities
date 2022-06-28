@@ -9,13 +9,13 @@
     "prettier": "^2.5.1"
   },
   "scripts": {
-    "check": "yarn run check:types",
-    "check:types": "yarn workspaces foreach run check:types",
-    "build": "yarn run build:types && yarn run build:transpile",
-    "build:types": "yarn workspaces foreach run build:types",
-    "build:transpile": "yarn workspaces foreach run build:transpile",
-    "develop": "yarn workspaces foreach run develop",
-    "test": "yarn workspaces foreach run test",
+    "check": "pnpm run -r check:types",
+    "check:types": "pnpm run -r check:types",
+    "build": "pnpm run build:types && pnpm run build:transpile",
+    "build:types": "pnpm run -r build:types",
+    "build:transpile": "pnpm run -r build:transpile",
+    "develop": "pnpm run -r develop",
+    "test": "pnpm run -r test",
     "version": "changeset version",
     "release": "changeset publish"
   },
