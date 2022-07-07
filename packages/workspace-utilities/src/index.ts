@@ -1,3 +1,5 @@
-export * from "./Project";
+export * from "./DependencyType";
 export * from "./Workspace";
-export * from "./getWorkspaces";
+export * from "./Project";
+export * from "./getDependents";
+export * from "./getDependencies";

@@ -1,5 +1,8 @@
 import path from "path";
 import { exec } from "./exec";
+import { debug } from "./debug";
+
+const log = debug.extend('getDiff')
 
 export interface GetDiffOptions {
   cwd?: string;
@@ -16,6 +19,9 @@ export async function getDiff(
 ): Promise<GetDiffResult> {
   const args = ["diff", "--name-status", "--relative"];
   if (since) args.push(since);
+
+  log("git", [...args, "--", ...files])
+  
   const { stdout } = await exec("git", [...args, "--", ...files], {
     cwd,
   });

@@ -1,19 +1,23 @@
 # @jameslnewell/workspace-utilities
 
-Utilities for finding and filtering `yarn`/`npm` workspaces.
+Utilities for finding and filtering `yarn` and `npm` workspaces.
 
 ## Usage
 
 ```ts
-import {Project, getDiff} from '@jameslnewell/workspace-utilities'
+import {getDiff} from '@jameslnewell/git-utilities';
+import {Project, getDependents} from '@jameslnewell/workspace-utilities';
+import * as filters from '@jameslnewell/workspace-utilities/filters';
 
-const workspaces = await getWorkspaces(
-  await Project.fromDirectory(process.cwd()), 
-  {
-    since: 'master',
-    includeDependents: 'recursive',
-  }
-);
+const diff = await getDiff();
+const project = await Project.fromDirectory(process.cwd());
 
-workspaces.map(workspace => console.log(`${workspace.name}@${workspace.version}));
+const changedWorkspaces = project.children.filter(filters.changed(diff));
+const changedWorkspacesAndTheirDependents = Array.from(new Set([
+  ...changedWorkspaces,
+  ...changedWorkspaces.map(workspace => getDependents(workspace, {project}).flat()
+]))
+const workspacesThatRequireTesting = changedWorkspacesAndTheirDependents.filter(filters.script('test'))
+
+console.log(workspacesToTest)
 ```

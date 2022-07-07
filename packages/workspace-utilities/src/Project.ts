@@ -1,15 +1,25 @@
-import path from "path";
+import path from 'path'
 import glob from "fast-glob";
 import { Workspace } from "./Workspace";
-import { Manifest } from "./Manifest";
+
+function getWorkspacePatterns(workspace: Workspace): string[] {
+  // TODO: handle pnpm
+  return (
+    (Array.isArray(workspace.json.workspaces)
+      ? workspace.json.workspaces
+      : Array.isArray(workspace.json.workspaces?.packages)
+      ? workspace.json.workspaces?.packages
+      : []) ?? []
+  );
+}
 
 export class Project {
   #root: Workspace;
-  #workspaces: Array<Workspace>;
+  #children: Workspace[]
 
-  constructor(root: Workspace, workspaces: Array<Workspace>) {
+  constructor(root: Workspace, children: Workspace[]) {
     this.#root = root;
-    this.#workspaces = workspaces;
+    this.#children = children;
     // TODO: error if multiple packages exist with the same name
   }
 
@@ -17,28 +27,23 @@ export class Project {
     return this.#root;
   }
 
-  get workspaces(): Workspace[] {
-    return this.#workspaces;
+  get children(): Workspace[] {
+    return this.#children;
   }
 
   static async fromDirectory(directory: string): Promise<Project> {
-    const workspacesByName: Record<string, Workspace> = {};
-    const rootManifest = await Manifest.fromFile(
-      path.join(directory, "package.json")
-    );
-    const rootWorkspace = new Workspace(rootManifest, workspacesByName);
-    workspacesByName[rootWorkspace.name] = rootWorkspace;
+    const rootWorkspace = await Workspace.fromDirectory(directory);
+
+    const patterns = getWorkspacePatterns(rootWorkspace)
 
     const files = await glob(
-      rootManifest.workspaces.map((pattern) => `${pattern}/package.json`),
+      patterns.map((pattern) => `${pattern}/package.json`),
       { cwd: directory, absolute: true }
     );
 
     const workspaces = await Promise.all(
       files.map(async (file) => {
-        const childManifest = await Manifest.fromFile(file);
-        const childWorkspace = new Workspace(childManifest, workspacesByName);
-        workspacesByName[childWorkspace.name] = childWorkspace;
+        const childWorkspace = await Workspace.fromDirectory(path.dirname(file));
         return childWorkspace;
       })
     );

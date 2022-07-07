@@ -1,301 +1,187 @@
 import {
-  nameMatches,
-  directoryMatches,
-  scriptExists,
-  isPrivate,
+  directory,
+  private as isPrivate,
+  name,
+  script,
+  changed,
   not,
   or,
   and,
 } from "./filters";
-import { Manifest } from "./Manifest";
+import { barDirectory, barWorkspace, fooDirectory, fooJSON, fooWorkspace } from "./fixtures";
 import { Workspace } from "./Workspace";
 
-const workspacesByName = {};
-
-describe("nameMatches()", () => {
-  test("matches name with an exact string", () => {
-    const workspace = new Workspace(
-      new Manifest("packages/foo/package.json", {
-        name: "foo",
-        version: "1.0.0",
-      }),
-      workspacesByName
-    );
-    const matches = nameMatches("foo")(workspace);
-    expect(matches).toBeTruthy();
-  });
-
-  test("matches name with a glob", () => {
-    const workspace = new Workspace(
-      new Manifest("packages/bar/package.json", {
-        name: "@foo/bar",
-        version: "1.0.0",
-      }),
-      workspacesByName
-    );
-    const matches = nameMatches("@foo/*")(workspace);
-    expect(matches).toBeTruthy();
-  });
-
-  test("does not match name with an exact string", () => {
-    const workspace = new Workspace(
-      new Manifest("packages/foo/package.json", {
-        name: "foo",
-        version: "1.0.0",
-      }),
-      workspacesByName
-    );
-    const matches = nameMatches("bar")(workspace);
-    expect(matches).toBeFalsy();
-  });
-
-  test("does not match name with a glob string", () => {
-    const workspace = new Workspace(
-      new Manifest("packages/foo/package.json", {
-        name: "foo",
-        version: "1.0.0",
-      }),
-      workspacesByName
-    );
-    const matches = nameMatches("b*")(workspace);
-    expect(matches).toBeFalsy();
-  });
-});
-
-describe("directoryMatches()", () => {
+describe("directory()", () => {
   test("matches directory with an exact string", () => {
-    const workspace = new Workspace(
-      new Manifest("packages/foo/package.json", {
-        name: "foo",
-        version: "1.0.0",
-      }),
-      workspacesByName
-    );
-    const matches = directoryMatches("packages/foo")(workspace);
+    const matches = directory(fooDirectory)(fooWorkspace);
     expect(matches).toBeTruthy();
   });
 
   test("matches directory with a glob", () => {
-    const workspace = new Workspace(
-      new Manifest("packages/bar/package.json", {
-        name: "@foo/bar",
-        version: "1.0.0",
-      }),
-      workspacesByName
-    );
-    const matches = directoryMatches("*/bar")(workspace);
+    const matches = directory("*/bar")(barWorkspace);
     expect(matches).toBeTruthy();
   });
 
   test("does not match directory with an exact string", () => {
-    const workspace = new Workspace(
-      new Manifest("packages/foo/package.json", {
-        name: "foo",
-        version: "1.0.0",
-      }),
-      workspacesByName
-    );
-    const matches = directoryMatches("pacakges/bar")(workspace);
+    const matches = directory(barDirectory)(fooWorkspace);
     expect(matches).toBeFalsy();
   });
 
   test("does not match directory with a glob string", () => {
-    const workspace = new Workspace(
-      new Manifest("packages/foo/package.json", {
-        name: "foo",
-        version: "1.0.0",
-      }),
-      workspacesByName
-    );
-    const matches = directoryMatches("packages/b*")(workspace);
+    const matches = directory("packages/b*")(fooWorkspace);
     expect(matches).toBeFalsy();
   });
 });
 
-describe("scriptExists()", () => {
-  test("matches workspace with script", () => {
-    const workspace = new Workspace(
-      new Manifest("packages/foo/package.json", {
-        name: "foo",
-        version: "1.0.0",
-        scripts: {
-          test: "jest",
-        },
-      }),
-      workspacesByName
-    );
-    const matches = scriptExists("test")(workspace);
-    expect(matches).toBeTruthy();
-  });
-
-  test("does not match workspace without script", () => {
-    const workspace = new Workspace(
-      new Manifest("packages/foo/package.json", {
-        name: "foo",
-        version: "1.0.0",
-      }),
-      workspacesByName
-    );
-    const matches = scriptExists("test")(workspace);
-    expect(matches).toBeFalsy();
-  });
-});
-
-describe("isPrivate()", () => {
+describe("private()", () => {
   test("matches private workspace", () => {
-    const workspace = new Workspace(
-      new Manifest("packages/foo/package.json", {
+    const workspace = new Workspace(fooDirectory, {
+        ...fooJSON,
         private: true,
-        name: "foo",
-        version: "1.0.0",
-      }),
-      workspacesByName
+      }
     );
     const matches = isPrivate()(workspace);
     expect(matches).toBeTruthy();
   });
 
   test("does not match public workspace", () => {
-    const workspace = new Workspace(
-      new Manifest("packages/foo/package.json", {
-        name: "foo",
-        version: "1.0.0",
-      }),
-      workspacesByName
-    );
-    const matches = isPrivate()(workspace);
+    const matches = isPrivate()(fooWorkspace);
     expect(matches).toBeFalsy();
   });
 });
 
+describe("name()", () => {
+  test("matches name with an exact string", () => {
+    const matches = name("foo")(fooWorkspace);
+    expect(matches).toBeTruthy();
+  });
+
+  test("matches name with a glob", () => {
+    const matches = name("f*")(fooWorkspace);
+    expect(matches).toBeTruthy();
+  });
+
+  test("does not match name with an exact string", () => {
+    const matches = name("bar")(fooWorkspace);
+    expect(matches).toBeFalsy();
+  });
+
+  test("does not match name with a glob string", () => {
+    const matches = name("b*")(fooWorkspace);
+    expect(matches).toBeFalsy();
+  });
+});
+
+describe("script()", () => {
+  test("matches workspace with script", () => {
+    const workspace = new Workspace(fooDirectory, {
+        ...fooJSON,
+        scripts: {
+          test: "jest",
+        },
+      }
+    );
+    const matches = script("test")(workspace);
+    expect(matches).toBeTruthy();
+  });
+
+  test("does not match workspace without script", () => {
+    const matches = script("test")(fooWorkspace);
+    expect(matches).toBeFalsy();
+  });
+});
+
+
+describe("changed()", () => {
+  test("matches changed workspaces", () => {
+    const diff = {
+      [`${fooDirectory}/src/index.ts`]: 'M'
+    }
+    const matches = changed(diff)(fooWorkspace);
+    expect(matches).toBeTruthy();
+  });
+
+  test("does not match unchanged workspace", () => {
+    const diff = {
+      [`/some/directory/src/index.ts`]: 'M'
+    }
+    const matches = changed(diff)(fooWorkspace);
+    expect(matches).toBeFalsy();
+  });
+});
+
+
 describe("not()", () => {
   test("does not match truthy filter", () => {
-    const workspace = new Workspace(
-      new Manifest("package.json", {
-        name: "foo",
-        version: "1.0.0",
-      }),
-      workspacesByName
-    );
-    const matches = not(() => true)(workspace);
+    const matches = not(() => true)(fooWorkspace);
     expect(matches).toBeFalsy();
   });
 });
 
 describe("or()", () => {
   test("matches both filters", () => {
-    const workspace = new Workspace(
-      new Manifest("package.json", {
-        name: "foo",
-        version: "1.0.0",
-      }),
-      workspacesByName
-    );
     const matches = or(
       () => true,
       () => true
-    )(workspace);
+    )(fooWorkspace);
     expect(matches).toBeTruthy();
   });
+
   test("matches first filter", () => {
-    const workspace = new Workspace(
-      new Manifest("package.json", {
-        name: "foo",
-        version: "1.0.0",
-      }),
-      workspacesByName
-    );
     const matches = or(
       () => false,
       () => true
-    )(workspace);
+    )(fooWorkspace);
     expect(matches).toBeTruthy();
   });
+
   test("matches second filter", () => {
-    const workspace = new Workspace(
-      new Manifest("package.json", {
-        name: "foo",
-        version: "1.0.0",
-      }),
-      workspacesByName
-    );
     const matches = or(
       () => true,
       () => false
-    )(workspace);
+    )(fooWorkspace);
     expect(matches).toBeTruthy();
   });
+
   test("matches none of the filters", () => {
-    const workspace = new Workspace(
-      new Manifest("package.json", {
-        name: "foo",
-        version: "1.0.0",
-      }),
-      workspacesByName
-    );
     const matches = or(
       () => false,
       () => false
-    )(workspace);
+    )(fooWorkspace);
     expect(matches).toBeFalsy();
   });
 });
 
 describe("and()", () => {
   test("matches both filters", () => {
-    const workspace = new Workspace(
-      new Manifest("package.json", {
-        name: "foo",
-        version: "1.0.0",
-      }),
-      workspacesByName
-    );
     const matches = and(
       () => true,
       () => true
-    )(workspace);
+    )(fooWorkspace);
     expect(matches).toBeTruthy();
   });
+
   test("does not match first filter", () => {
-    const workspace = new Workspace(
-      new Manifest("package.json", {
-        name: "foo",
-        version: "1.0.0",
-      }),
-      workspacesByName
-    );
     const matches = and(
       () => false,
       () => true
-    )(workspace);
+    )(fooWorkspace);
     expect(matches).toBeFalsy();
   });
+
   test("does not match second filter", () => {
-    const workspace = new Workspace(
-      new Manifest("package.json", {
-        name: "foo",
-        version: "1.0.0",
-      }),
-      workspacesByName
-    );
     const matches = and(
       () => true,
       () => false
-    )(workspace);
+    )(fooWorkspace);
     expect(matches).toBeFalsy();
   });
+
   test("matches none of the filters", () => {
-    const workspace = new Workspace(
-      new Manifest("package.json", {
-        name: "foo",
-        version: "1.0.0",
-      }),
-      workspacesByName
-    );
     const matches = and(
       () => false,
       () => false
-    )(workspace);
+    )(fooWorkspace);
     expect(matches).toBeFalsy();
   });
 });

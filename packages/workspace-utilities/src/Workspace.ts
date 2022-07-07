@@ -1,127 +1,93 @@
-import debug from "debug";
-import path from "path";
-import { satisfies } from "semver";
+import path from 'path'
+import fs from "fs/promises";
 import { DependencyType } from "./DependencyType";
-import { Manifest } from "./Manifest";
 
-const logger = debug("@jameslnewell/workspace-utilities:Workspace");
-const getDependenciesLogger = logger.extend("getDependencies");
-const getDependentsLogger = logger.extend("getDependents");
+const dependencyKeys = {
+  [DependencyType.Dependencies]: "dependencies" as const,
+  [DependencyType.DevelopmentDependencies]: "devDependencies" as const,
+};
 
-export interface GetDependentsOptions {
-  types?: DependencyType[];
-  recursive?: boolean;
-}
-
-export interface GetDependenciesOptions {
-  types?: DependencyType[];
-  recursive?: boolean;
+export interface JSON {
+  private?: boolean;
+  name: string;
+  version: string;
+  workspaces?: string[] | { packages: string[] };
+  dependencies?: Record<string, string>;
+  devDependencies?: Record<string, string>;
+  scripts?: Record<string, string>;
+  [property: string]: unknown
 }
 
 export class Workspace {
-  #manifest: Manifest;
-  #workspacesByName: Record<string, Workspace>;
+  #directory: string;
+  #json: JSON;
 
-  constructor(manifest: Manifest, workspacesByName: Record<string, Workspace>) {
-    this.#manifest = manifest;
-    this.#workspacesByName = workspacesByName;
+  public constructor(directory: string, json: JSON) {
+    this.#directory = directory;
+    this.#json = json;
   }
 
-  get directory(): string {
-    return path.dirname(this.#manifest.file);
+  public get directory(): string {
+    return this.#directory;
   }
 
-  get manifest(): Manifest {
-    return this.#manifest;
+  public get json(): JSON {
+    return this.#json;
   }
 
-  get private(): boolean {
-    return this.#manifest.private;
+  public get private(): boolean {
+    return this.#json.private ?? false;
   }
 
-  get name(): string {
-    return this.#manifest.name;
+  public get name(): string {
+    return this.#json.name;
   }
 
-  get version(): string {
-    return this.#manifest.version;
+  public get version(): string {
+    return this.#json.version;
   }
 
-  hasScript(name: string): boolean {
-    return Boolean(this.#manifest.scripts[name]);
+  public get scripts() {
+    return this.#json.scripts ?? {};
   }
 
-  getDependents({ types, recursive }: GetDependentsOptions = {}): Workspace[] {
-    // using a set to avoid duplicates
-    const workspacesThatDependOnThisWorkspace = new Set<Workspace>();
-
-    // TODO: check for circular references
-    for (const dependentWorkspace of Object.values(this.#workspacesByName)) {
-      // TODO: ignore self
-      const range = dependentWorkspace.#manifest
-        .getDependencies(types)
-        .get(this.name);
-      if (range) {
-        const satisfied = satisfies(this.version, range);
-        getDependentsLogger(
-          `${this.name}@${this.version} ${
-            satisfied ? "satisfies" : "does not satisfy"
-          } ${dependentWorkspace.name}'s requirement for ${this.name}@${range}`
-        );
-        if (satisfied) {
-          workspacesThatDependOnThisWorkspace.add(dependentWorkspace);
-          if (recursive) {
-            dependentWorkspace
-              .getDependents({
-                types,
-                recursive,
-              })
-              .forEach((w) => workspacesThatDependOnThisWorkspace.add(w));
+  dependencies(
+    types: DependencyType[] = [
+      DependencyType.Dependencies,
+      DependencyType.DevelopmentDependencies,
+    ]
+  ): Map<string, string> {
+    const combined = new Map<string, string>();
+    for (const type of types) {
+      const dependencies = this.#json[dependencyKeys[type]];
+      if (dependencies) {
+        for (const [name, range] of Object.entries(dependencies)) {
+          if (range) {
+            combined.set(name, range);
           }
         }
       }
     }
-
-    return Array.from(workspacesThatDependOnThisWorkspace);
+    return combined;
   }
 
-  getDependencies({
-    types,
-    recursive,
-  }: GetDependenciesOptions = {}): Workspace[] {
-    // using a set to avoid duplicates
-    const workspacesThatThisWorkspaceDependsOn = new Set<Workspace>();
+  static async fromDirectory(directory: string): Promise<Workspace> {
+    const contents = await fs.readFile(path.join(directory, 'package.json'));
+    const json = JSON.parse(contents.toString());
 
-    // TODO: check for circular references
-    const dependencies = this.#manifest.getDependencies(types);
-    for (const [dependencyName, dependencyRange] of dependencies.entries()) {
-      const dependencyWorkspace = this.#workspacesByName[dependencyName];
-      if (dependencyRange && dependencyWorkspace) {
-        const satisfied = satisfies(
-          dependencyWorkspace.version,
-          dependencyRange
-        );
-        getDependenciesLogger(
-          `${dependencyWorkspace.name}@${dependencyWorkspace.version} ${
-            satisfied ? "satisfies" : "does not satisfy"
-          } ${this.name}'s requirement for ${
-            dependencyWorkspace.name
-          }@${dependencyRange}`
-        );
-        if (satisfied) {
-          workspacesThatThisWorkspaceDependsOn.add(dependencyWorkspace);
-          if (recursive) {
-            dependencyWorkspace
-              .getDependencies({
-                types,
-                recursive,
-              })
-              .forEach((w) => workspacesThatThisWorkspaceDependsOn.add(w));
-          }
-        }
-      }
+    if (json === null || typeof json !== "object") {
+      throw new Error(`package.json doesn't contain a valid manifest`);
+    }
+    if (typeof json.name !== "string") {
+      throw new Error(`package.json doesn't contain a valid name`);
+    }
+    if (typeof json.version !== "string") {
+      throw new Error(`package.json doesn't contain a valid version`);
     }
 
-    return Array.from(workspacesThatThisWorkspaceDependsOn);
+    // TODO: check other types match JSON
+
+    return new Workspace(directory, json);
   }
+
 }

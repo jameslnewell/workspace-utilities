@@ -1,49 +1,45 @@
-import { Manifest } from "./Manifest";
 import { Workspace } from "./Workspace";
 
-export const rootDirectory = "";
 
 export const since = "ref";
 
-const workspacesByName: Record<string, Workspace> = {};
-
+export const rootDirectory = "";
 export const rootFile = "package.json";
 export const rootName = "root";
+export const rootVersion = "1.0.0";
 export const rootJSON = {
   name: rootName,
-  version: "1.0.0",
+  version: rootVersion,
   workspaces: ["packages/*"],
 };
-export const rootManifest = new Manifest(rootFile, rootJSON);
-export const rootWorkspace = new Workspace(rootManifest, workspacesByName);
+export const rootWorkspace = new Workspace(rootFile, rootJSON);
 
-export const fooFile = "packages/foo/package.json";
+export const fooDirectory = "packages/foo";
+export const fooFile = `${fooDirectory}/package.json`;
 export const fooName = "foo";
+export const fooVersion = "1.2.3";
 export const fooJSON = {
   name: fooName,
-  version: "1.2.3",
+  version: fooVersion,
 };
-export const fooManifest = new Manifest(fooFile, fooJSON);
-export const fooWorkspace = new Workspace(fooManifest, workspacesByName);
+export const fooWorkspace = new Workspace(fooDirectory, fooJSON);
 export const fooDiff = {
   [fooFile]: "M",
 };
 
-export const barFile = "packages/bar/package.json";
+export const barDirectory = "packages/bar";
+export const barFile = `${barDirectory}/package.json`;
 export const barName = "bar";
+export const barVersion = "4.5.6";
 export const barJSON = {
   name: barName,
-  version: "4.5.6",
+  version: barVersion,
 };
-export const barManifest = new Manifest(barFile, barJSON);
-export const barWorkspace = new Workspace(barManifest, workspacesByName);
+export const barWorkspace = new Workspace(barDirectory, barJSON);
 export const barDiff = {
   [barFile]: "M",
 };
 
-export const barBarFile = "packages/barbar/package.json";
+export const barBarDirectory = "packages/barbar";
+export const barBarFile = `${barBarDirectory}/package.json`;
 export const barBarName = "barbar";
-
-workspacesByName[rootName] = rootWorkspace;
-workspacesByName[fooName] = fooWorkspace;
-workspacesByName[barName] = barWorkspace;
