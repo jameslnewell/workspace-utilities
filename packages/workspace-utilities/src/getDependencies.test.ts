@@ -1,4 +1,4 @@
-import { barBarFile, barBarName, barFile, barJSON, barName, barWorkspace, fooFile, fooJSON, fooName, fooWorkspace, rootName, rootWorkspace } from "./fixtures";
+import { barBarFile, barBarName, barFile, barJSON, barWorkspace, fooFile, fooJSON, fooWorkspace, rootWorkspace } from "./fixtures";
 import { getDependencies } from "./getDependencies";
 import { Project } from "./Project";
 import { Workspace } from "./Workspace";
