@@ -47,7 +47,7 @@ jobs:
         shell: bash {0} # opt-out of exit on error
       - run: git push
       - run: git push --follow-tags
-      - run: pnpm run -r publish
+      - run: pnpm -r publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
