@@ -23,7 +23,6 @@ importers:
       chokidar: ^3.5.3
       debug: ^4.3.4
       jest: ^27.5.1
-      publish-if-not-published: ^3.1.3
       typescript: ^4.6.3
     dependencies:
       debug: 4.3.4
@@ -38,7 +37,6 @@ importers:
       '@types/semver': 7.3.9
       chokidar: 3.5.3
       jest: 27.5.1
-      publish-if-not-published: 3.1.3
       typescript: 4.6.4
 
   packages/workspace-utilities:
@@ -60,7 +58,6 @@ importers:
       memfs: ^3.4.7
       micromatch: ^4.0.5
       mock-fs: ^5.1.2
-      publish-if-not-published: ^3.1.3
       semver: ^7.3.7
       typescript: ^4.6.3
     dependencies:
@@ -83,7 +80,6 @@ importers:
       jest: 28.1.2_@types+node@17.0.32
       memfs: 3.4.7
       mock-fs: 5.1.2
-      publish-if-not-published: 3.1.3
       typescript: 4.6.4
 
 packages:
@@ -1425,10 +1421,6 @@ packages:
     resolution: {integrity: sha512-+9axpWx2b2JCVovr7Ilgt96uc6C1zBKOQMpGtRbWT9IoR/8ue32GGMfGA4woP8QyP2gBs6GQWEVM3tCybGCxDA==}
     dev: true
 
-  /@types/node/14.18.21:
-    resolution: {integrity: sha512-x5W9s+8P4XteaxT/jKF0PSb7XEvo5VmqEWgsMlyeY4ZlLK8I6aH6g5TPPyDlLAep+GYf4kefb7HFyc7PAO3m+Q==}
-    dev: true
-
   /@types/node/17.0.32:
     resolution: {integrity: sha512-eAIcfAvhf/BkHcf4pkLJ7ECpBAhh9kcxRBpip9cTiO+hf+aJrsxYxBeS6OXvOd9WqNAJmavXVpZvY1rBjNsXmw==}
     dev: true
@@ -1455,10 +1447,6 @@ packages:
 
   /@types/stack-utils/2.0.1:
     resolution: {integrity: sha512-Hl219/BT5fLAaz6NDkSuhzasy49dwQS/DSdu4MdggFB8zcXv7vflBI3xp7FEmkmdDkBUI2bPUNeMttp2knYdxw==}
-    dev: true
-
-  /@types/yargs-parser/20.2.2:
-    resolution: {integrity: sha512-sUWMriymrSqTvxCmCkf+7k392TNDcMJBHI1/rysWJxKnWAan/Zk4gZ/GEieSRo4EqIEPpbGU3Sd/0KTRoIA3pA==}
     dev: true
 
   /@types/yargs-parser/21.0.0:
@@ -4218,21 +4206,6 @@ packages:
 
   /psl/1.9.0:
     resolution: {integrity: sha512-E/ZsdU4HLs/68gYzgGTkMicWTLPdAftJLfJFlLUAAKZGkStNU72sZjT66SnMDVOfOWY/YAoiD7Jxa9iHvngcag==}
-    dev: true
-
-  /publish-if-not-published/3.1.3:
-    resolution: {integrity: sha512-N1oZBeBYGFCQ2oMjCoccL9H7EaosjmMYjUPHZVXzeeFvQFhAh8BJcLx2yfOPMcIdmwfRXVVOfwkk8z0mqHzi+A==}
-    hasBin: true
-    dependencies:
-      '@types/node': 14.18.21
-      '@types/semver': 7.3.9
-      '@types/yargs': 17.0.10
-      '@types/yargs-parser': 20.2.2
-      chalk: 4.1.2
-      regenerator-runtime: 0.13.9
-      semver: 7.3.7
-      yargs: 17.5.1
-      yargs-parser: 21.0.1
     dev: true
 
   /punycode/2.1.1:

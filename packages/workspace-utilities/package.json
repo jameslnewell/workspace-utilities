@@ -30,7 +30,6 @@
     "jest": "^28.1.2",
     "memfs": "^3.4.7",
     "mock-fs": "^5.1.2",
-    "publish-if-not-published": "^3.1.3",
     "typescript": "^4.6.3"
   },
   "jest": {
@@ -43,7 +42,6 @@
     "build:types": "tsc --declaration --emitDeclarationOnly",
     "build:transpile": "swc src --out-dir dist --source-maps",
     "develop": "pnpm run build:transpile --watch",
-    "test": "jest",
-    "publish": "publish-if-not-published"
+    "test": "jest"
   }
 }
