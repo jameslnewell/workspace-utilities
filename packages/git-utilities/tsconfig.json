@@ -3,7 +3,10 @@
   "compilerOptions": {
     "module": "CommonJS",
     "target": "ES2018",
+    "declaration": true,
+    "rootDir": "src",
     "outDir": "dist",
+    "declarationDir": "dist",
     "resolveJsonModule": true
   },
   "include": ["src"]
